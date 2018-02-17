@@ -29,7 +29,7 @@ function myFunction(){
 
 	$.ajax({
         type: 'POST',
-        url: 'http://localhost:3000/getstring',
+        url: '../getstring',
 		contentType: 'application/json',
 		data: JSON.stringify({txtstring: inptxt1}),
 		success: function(result){$("#dest").html(result);}
@@ -40,6 +40,7 @@ function myFunction(){
 }
 
 //url: 'https://sentiment-profile-dev.eu-gb.mybluemix.net/getstring'
+//url: 'http://localhost:3000/getstring'
 	
 </script>
 
