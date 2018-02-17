@@ -2,7 +2,8 @@
 const express = require('express')
 const app = express()
 //const port = 8080
-const port = 3000
+//const port = 3000
+var port = process.env.port || 3000;
 
 require('dotenv').load({ silent: true });
 var cfenv = require("cfenv");
