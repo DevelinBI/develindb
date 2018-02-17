@@ -1,0 +1,8 @@
+applications:
+- name: sentiment-profile-dev
+  path: .
+  buildpack: sdk-for-nodejs
+  command: npm start
+  memory: 128M
+  services:
+  - sentiment-profile-dev-natural-la-1510993403356
