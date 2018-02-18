@@ -1,17 +1,51 @@
 
 const express = require('express')
 const app = express()
-//const port = 8080
-//const port = 3000
+
 var port = process.env.port || 3000;
 
 require('dotenv').load({ silent: true });
 var cfenv = require("cfenv");
-
 var bodyParser = require('body-parser');
 var path = require('path');
-
 var fs = require('fs');
+var request = require("request")
+
+
+
+
+//------------- Gov Data
+var url = "http://chargepoints.dft.gov.uk/api/retrieve/registry/format/json/postcode/MK11+1HX/limit/1/"
+
+request({
+    url: url,
+    json: true
+}, function (error, response, body) {
+
+    if (!error && response.statusCode === 200) {
+        console.log(body) // Print the json response
+    }
+	/* console.log("response: " + JSON.stringify(response));
+	console.log("error: " + error);
+	console.log("body: " + body); */
+})
+
+
+
+
+
+
+
+//--------------  set up the cosmos db npm requirements
+var DocumentClient = require('documentdb').DocumentClient;
+var host = "https://develindb.documents.azure.com:443/";                     // Add your endpoint
+var masterKey = "XwOJ5m9wao57sUj7d1rzdv6Fx9xPrR0C2M0cI6JGWyI4SJ0XW1CwdSrvAwHxDqK2npaPifCALNlIJu2fmTYeGA==";  // This is the primary key from the set of keys
+var client = new DocumentClient(host, {masterKey: masterKey});
+
+var databaseDefinition = { id: "clientDb" };
+var collectionDefinition = { id: "clientdb-coll" };
+var documentDefinition = { id: "record 3", content: "Hello World!" };
+//-----------------------
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -29,7 +63,7 @@ app.listen(port, (err) => {
 
 
 
-//-------------- receives text item and stores the result in the cloud
+//-------------- receives text item and confirms receipt
 app.post('/getstring', (req, resp) => {
 	console.log('button pressed');
 	
@@ -52,5 +86,43 @@ app.post('/getstring', (req, resp) => {
 
 
 
+//------------- create the database content
+ /* client.createDatabase(databaseDefinition, function(err, database) {
+    if(err) return console.log(err);
+    console.log('created db');
 
+    client.createCollection(database._self, collectionDefinition, function(err, collection) {
+        if(err) return console.log(err);
+        console.log('created collection');
+
+        client.createDocument(collection._self, documentDefinition, function(err, document) {
+            if(err) return console.log(err);
+            console.log('Created Document with content: ', document.content);
+
+            //cleanup(client, database);
+        });
+    });
+});  */
+
+/* function cleanup(client, database) {
+    client.deleteDatabase(database._self, function(err) {
+        if(err) console.log(err);
+    })
+} */
+
+//------------- add documents to the database
+/* var databaseId = "clientDb";
+var collectionId = "clientdb-coll";
+var dbLink = 'dbs/' + databaseId;
+var collLink = dbLink + '/colls/' + collectionId;
+
+ 
+client.createDocument(collLink, documentDefinition, function (err, document) {
+	if (err) {
+		console.log(err);
+
+	} else {
+		console.log('created ' + document.id);
+	}
+}); */
 
