@@ -14,7 +14,7 @@ var collLink = dbLink + '/colls/' + collectionDefinition.id;
 
 
 //------------- Source Data
-var url = "http://chargepoints.dft.gov.uk/api/retrieve/registry/format/json/postcode/MK11+1HX/limit/10/";
+var url = "http://chargepoints.dft.gov.uk/api/retrieve/registry/format/json/postcode/MK11+1HX/limit/20/";
 var Tarray = [];
 
 request({

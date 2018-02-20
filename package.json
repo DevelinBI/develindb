@@ -15,11 +15,14 @@
     "express": "~4.15.5",
     "http": "0.0.0",
     "https": "^1.0.0",
+    "node-excel-to-json": "0.0.3",
     "path": "^0.12.7",
     "request": "^2.83.0",
     "twit": "^2.2.9",
     "watson-developer-cloud": "^2.39.0",
     "watson-react-components": "^0.6.10",
-    "watson-ui-components": "^0.6.0"
+    "watson-ui-components": "^0.6.0",
+    "xlsx": "^0.12.1",
+    "xlsx-to-json": "^0.3.0"
   }
 }
