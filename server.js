@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var fs = require('fs');
 
-var response = require("./js/interface.js");
+//var response = require("./js/interface.js");
 
 //---------------  set the server to listen
 app.use(express.static(path.join(__dirname, 'public')));
@@ -22,21 +22,80 @@ app.listen(port, (err) => {
     return console.log('something bad happened', err)
   }
 
-  console.log(`server is listening on ${port}`)
+  console.log(`server is listening on ${port}`);
 })
 
 
 
+
+
+//------------------ setup the interface collection connection
+var DocumentClient = require('documentdb').DocumentClient;
+var host = "https://develindb.documents.azure.com:443/";                     
+var masterKey = "XwOJ5m9wao57sUj7d1rzdv6Fx9xPrR0C2M0cI6JGWyI4SJ0XW1CwdSrvAwHxDqK2npaPifCALNlIJu2fmTYeGA==";  
+var client = new DocumentClient(host, {masterKey: masterKey});
+
+var databaseDefinition = { id: "clientDb" };
+var collectionDefinition = { id: "interface-col" };
+var dbLink = 'dbs/' + databaseDefinition.id;
+var collLink = dbLink + '/colls/' + collectionDefinition.id;
+
+
+
+
 //-------------- receives control items and confirms receipt
-app.post('/getstring', (req, resp) => {
+app.post('/submitstring', (req, resp) => {
 	
 	var txt_box1 = req.body.txtstring;
+	var id='box1';
+	var input = txt_box1;
 	
 	if (txt_box1.length!==0)
 		{
-			resp.writeHead(200, {"Content-Type": "text/plain"});
-			resp.end('Text entered');
-			response.msg("box1", txt_box1);
+				var jsonText = {id:id,type:input};
+				
+				//Check if exists
+				var querySpec = {
+					query: "SELECT * FROM docs i WHERE  i.id = 'box1'",
+				};	
+
+				client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
+
+					if (err) {
+								console.log("Error returning the document: " + JSON.stringify(err));
+
+							} 
+					else if (results.length == 0) 
+							{
+								//Create the record
+								console.log ("No documents found matching");
+								client.createDocument(collLink, jsonText, function (err, document) {
+									if (err) {
+										console.log("Error creating document: " + JSON.stringify(err));
+									} 
+								});
+								var progMsg = "created " + JSON.stringify(jsonText); 
+								console.log(progMsg);
+							} 
+					else  
+							{
+								//Replace the record
+								client.replaceDocument(collLink + '/docs/' + id, jsonText, function (err, updated) {
+									if (err) 
+									{
+										console.log("Error replacing the document: " + JSON.stringify(err));
+
+									}
+								});
+								var progMsg = "Replaced: " + JSON.stringify(jsonText); 
+								console.log(progMsg);
+								resp.writeHead(200, {"Content-Type": "text/plain"});
+								resp.end('Text updated');
+
+							}
+				});									
+												
+			
 			
 		}
 	else
@@ -44,8 +103,35 @@ app.post('/getstring', (req, resp) => {
 			
 			resp.writeHead(200, {"Content-Type": "text/plain"});
 			resp.end('No text entered');
-			console.log(response.msg("Nothing entered"));
+			
 		}
+	
+});
+
+//-------------- refreshes the index page
+app.get('/refreshstring', (req, resp) => {
+	
+				var querySpec = {
+					query: "SELECT * FROM docs i WHERE  i.id = 'box1'",
+				};
+				
+				client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
+
+					if (err) {
+								console.log("Error returning the document: " + JSON.stringify(err));
+
+							} 
+
+					else if (results.length == 1)
+							{
+
+								resp.writeHead(200, {"Content-Type": "text/plain"});
+								resp.end('Result: ' + JSON.stringify(results));
+
+							}
+				});		
+	
+	
 	
 });
 

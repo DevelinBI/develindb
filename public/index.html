@@ -48,6 +48,14 @@ function submitData(){
 function refreshData(){
 
 
+	$.ajax({
+		type: 'GET',
+		url: '../refreshstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$("#dest").html(result);}
+	});
+
 	
 }
 
