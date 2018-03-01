@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var fs = require('fs');
 
-
+var response = require("./js/interface.js");
 
 //---------------  set the server to listen
 app.use(express.static(path.join(__dirname, 'public')));
@@ -29,26 +29,29 @@ app.listen(port, (err) => {
 
 //-------------- receives control items and confirms receipt
 app.post('/getstring', (req, resp) => {
-	console.log('button pressed');
 	
-	var search_word = req.body.txtstring;
+	var txt_box1 = req.body.txtstring;
 	
-	if (search_word.length!==0){
-		resp.writeHead(200, {"Content-Type": "text/plain"});
-		resp.end('Text entered');
-		console.log("Text received");
+	if (txt_box1.length!==0)
+		{
+			resp.writeHead(200, {"Content-Type": "text/plain"});
+			resp.end('Text entered');
+			response.msg("box1", txt_box1);
+			
 		}
-	else{
-		
-		resp.writeHead(200, {"Content-Type": "text/plain"});
-		resp.end('No text entered');
-		console.log("No text received");
-	}
+	else
+		{
+			
+			resp.writeHead(200, {"Content-Type": "text/plain"});
+			resp.end('No text entered');
+			console.log(response.msg("Nothing entered"));
+		}
 	
 });
 
 //require("./js/data_chargePoint.js");
-require("./js/data_local_excel.js");
+//require("./js/data_local_excel.js");
+
 
 
 
