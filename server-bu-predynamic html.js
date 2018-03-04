@@ -13,72 +13,17 @@ var request = require("request");
 
 
 //---------------  set the server to listen
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());  
+app.use(bodyParser.json());
 
-var publicDir = path.join(__dirname, 'public')
-
-
-
- app.get("/", function (req, resp) {
-
-	var blocks = require('./html/blocks.json');	
-	var html;
-	var htmlArray=[];
-	
-	for (let i = 0; i < 2; i++) {
-	
-		fs.readFile('./html/' + blocks["b" + i] + '.html',null, function(error, data){
-			if(error){
-				resp.writeHead(404, {"Content-Type": "text/plain"});
-				resp.write('file not found');
-			}
-			else{					
-
-				htmlArray.push(data);
-				if(htmlArray.length==2){
-					
-					for (let j = 0; j < 2; j++) {	
-		
-						if(html == undefined){html = htmlArray[j];}
-						else{
-							html = html + htmlArray[j];
-						}							
-				
-						if (j == 1){
-							
-							fs.writeFile('./public/index.html', html, function (err) {
-								if (err) {console.log(err);}
-								else{
-									resp.sendFile(path.join(publicDir, 'index.html'))						
-																}
-							});
-						}	
-					}						
-				}
-
-			}	
-		});
-	}
-});  
-
-
- 
- 
- app.listen(port, (err) => {
+app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)
   }
 
   console.log(`server is listening on ${port}`);
-}) 
-
-
-
-
-
-
+})
 
 
 //require("./js/data_freeagent_AuthRequest.js");

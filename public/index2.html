@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Header</title>   
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+<body>
+<div class="container">
+
+	<div class="banner-row">
+		<h1>Cloud Portal Interface Control 2</h1>
+	</div>
+
+	<div class = "container-datasources">
+		<button onclick="">Add datasource</button>
+		<div 
+
+
+
+
+	</div>
+
+
+
+
+
+
+	
+
+	<textarea id="box1" class="entry-box" rows="1" cols="20"></textarea>
+	<textarea id="box2" class="entry-box" rows="1" cols="20"></textarea>
+	<textarea id="box3" class="entry-box" rows="1" cols="20"></textarea>
+	<textarea id="box4" class="entry-box" rows="1" cols="20"></textarea>
+	
+	<div class="clear">
+	</div>
+	<button onclick="submitData()">Submit</button> 
+	<div id="dest">
+	</div>
+	<button onclick="refreshData()">Refresh</button>
+
+
+</div>
+</body>
+</html>
+
+
+
+
+<script>
+function submitData(){	
+	var inptxt1 = $("#box1").val();
+	$.ajax({
+		type: 'POST',
+		url: '../submitstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: inptxt1}),
+		success: function(result){$("#dest").html(result);}
+	});	
+}
+
+function refreshData(){
+	$.ajax({
+		type: 'GET',
+		url: '../refreshstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$("#dest").html(result);}
+	});	
+}
+
+function freeagentTokenrefresh(){
+	$.ajax({
+		type: 'GET',
+		url: '../freeagent',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$("#token-response").html(result);}
+	});	
+}
+
+
+
+//url: 'https://sentiment-profile-dev.eu-gb.mybluemix.net/getstring'
+//url: 'http://localhost:3000/getstring'
+	
+</script>
+

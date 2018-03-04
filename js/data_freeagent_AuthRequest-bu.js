@@ -2,18 +2,6 @@
 
 var request = require("request")
 
-
-
-app.post('/freeagent', (req, resp) => {
-	
-	resp.writeHead(200, {"Content-Type": "text/plain"});
-	resp.end('FA request updated');
-	
-});
-
-
-
-
 //========================================================	  
 request(
 
