@@ -1,32 +1,121 @@
+<!--[0]-->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Header</title>   
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script> 
-	<link rel='stylesheet' type='text/css' href='"../css/style.css'>
+	<link rel='stylesheet' type='text/css' href='./css/style.css'>
 </head>
 <body>
 <div class='container'>
 
 	<div class='banner-row'>
-		<h1>Cloud Portal Interface Control 17</h1>
+		<h1>Cloud Portal Interface Control 2</h1>
 	</div>
 
 	<div class = 'container-datasources'>
-		<button onclick=''>Add datasource</button>
-	</div>
-	<div class = 'container-datasources'>
-		<button onclick=''>Add datasource</button>
-	</div>
+		<div class = 'new-sources'>
+			<p class='new-source'>Please choose a new data source.</p>
+			<select id='dataSource' class='new-source'>
+				  <option value='nil'>Please select</option>
+				  <option value='freeagent'>FreeAgent</option>
+				  <option value='xero'>Xero</option>
+				  <option value='quickbooks'>QuickBooks</option>
+				  <option value='spreadsheet'>Spreadsheet</option>
+			</select> 
+			<button class='new-source' onclick='addDatasource()'>Add datasource</button>
+		</div>
+
+		<div class = 'selected-sources'>
 
 
-
+<!--[1]-->
+			<div class = 'source-wrapper' id='b1'>
+				<h2>FreeAgent</h2>
+				<div class='fa-help'>
+					<button onclick='fa-clientId-submit()'>Show steps</button>
+					<textarea id='fa-steps' class='fa-steps' rows='1' cols='20'></textarea>
+				</div>
+				<div class='fa-container'>
+					<p class='boxlabel'>Enter Client ID</p>
+					<textarea id='fa-clientID' class='entry-box' rows='1' cols='20'></textarea>
+					<button onclick='fa-clientId-submit()'>Submit client ID</button>
+				</div>
+				<div class='fa-container'>
+					<p class='boxlabel'>Enter Access Token</p>
+					<textarea id='fa-tokenAccess' class='entry-box' rows='1' cols='20'></textarea>
+				</div>
+				<div class='fa-container'>				
+					<p class='boxlabel'>Enter Refresh Token</p>
+					<textarea id='fa-tokenRefresh' class='entry-box' rows='1' cols='20'></textarea>
+					<button onclick='fa-token-submit()'>Submit token</button>	
+				</div>
+				<div class='fa-container'>
+					<button class='btn-delete' onclick='fa-delete'>Delete data source</button>
+				</div>
+				<div class='clear'></div>	
+			</div>
+<!--[800]-->		
+		</div>
 </div>
 </body>
 </html>
 
 
+NS INCLUDE A RESET BUTTON TO THE LEFT OF THE DELETE BUTTON AND THEN START WORK ON THE STEPS TO INTERFACE
 
 
 
+<!--[900]-->
+<script>
 
+function addDatasource() {
+    var source = $('#dataSource').val();
+	$.ajax({
+		type: 'POST',
+		url: '../newdatasource',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: source}),
+		success: function(result){}
+	});	
+}
+
+
+
+function submitData(){	
+	var inptxt1 = $('#box1').val();
+	$.ajax({
+		type: 'POST',
+		url: '../submitstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: inptxt1}),
+		success: function(result){$('#dest').html(result);}
+	});	
+}
+
+function refreshData(){
+	$.ajax({
+		type: 'GET',
+		url: '../refreshstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$('#dest').html(result);}
+	});	
+}
+
+function freeagentTokenrefresh(){
+	$.ajax({
+		type: 'GET',
+		url: '../freeagent',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$('#token-response').html(result);}
+	});	
+}
+
+
+
+//url: 'https://sentiment-profile-dev.eu-gb.mybluemix.net/getstring'
+//url: 'http://localhost:3000/getstring'
+	
+</script>

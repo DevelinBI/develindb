@@ -13,23 +13,24 @@ var request = require("request");
 
 
 //---------------  set the server to listen
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());  
 
-var publicDir = path.join(__dirname, 'public')
+var publicDir = path.join(__dirname, 'public');
 
 
-
- app.get("/", function (req, resp) {
+ /* app.get("/", function (req, resp) {
 
 	var blocks = require('./html/blocks.json');	
 	var html;
 	var htmlArray=[];
 	
-	for (let i = 0; i < 2; i++) {
+	var blockcount = Object.keys(blocks).length;
 	
-		fs.readFile('./html/' + blocks["b" + i] + '.html',null, function(error, data){
+	Object.keys(blocks).forEach(function(key) {
+
+		fs.readFile('./html/' + blocks[key] + '.html',null, function(error, data){
 			if(error){
 				resp.writeHead(404, {"Content-Type": "text/plain"});
 				resp.write('file not found');
@@ -37,35 +38,33 @@ var publicDir = path.join(__dirname, 'public')
 			else{					
 
 				htmlArray.push(data);
-				if(htmlArray.length==2){
-					
-					for (let j = 0; j < 2; j++) {	
+				if(htmlArray.length==blockcount){
+
+					htmlArray.sort();
+					for (let j = 0; j < blockcount; j++) {	
 		
 						if(html == undefined){html = htmlArray[j];}
 						else{
 							html = html + htmlArray[j];
 						}							
 				
-						if (j == 1){
+						if (j == blockcount - 1){
 							
 							fs.writeFile('./public/index.html', html, function (err) {
 								if (err) {console.log(err);}
 								else{
-									resp.sendFile(path.join(publicDir, 'index.html'))						
-																}
+									resp.sendFile(path.join(publicDir, 'index.html'));
+									app.use(express.static(path.join(__dirname, 'public')));
+								}
 							});
 						}	
 					}						
 				}
-
 			}	
 		});
-	}
-});  
+	});	
+});   */
 
-
- 
- 
  app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)
@@ -97,6 +96,19 @@ var databaseDefinition = { id: "clientDb" };
 var collectionDefinition = { id: "interface-col" };
 var dbLink = 'dbs/' + databaseDefinition.id;
 var collLink = dbLink + '/colls/' + collectionDefinition.id;
+
+
+function newSource(type, err){
+	
+	//---------- Identify the location for the new code and read the max number in the index file that sits above this position
+	
+	
+	
+	
+	
+	
+	
+}
 
 
 
@@ -194,41 +206,10 @@ app.get('/refreshstring', (req, resp) => {
 });
 
 
-//-------------- requests FreeAgent token
-app.get('/freeagent', (req, resp) => {
-
-
-	
-	  request(
-
-			{
-			
-				uri: 'https://api.freeagent.com/v2/token_endpoint',
-				method: 'POST',
-				client_id: 'MyeuHkExlC8nJrdx6mTDyA',
-				client_secret: 'JJihUFZ1YyiOyk-woxQcFQ',
-				grant_type: 'authorization_code',
-				response_type: 'code',
-				headers: {					
-							'Accept': 'application/json',
-							'Content-Type': 'application/json'							
-						},
-				redirect_uri: 'https://localhost:3000/',
-				access_type: 'offline',
-				scope: 'some text'
-
-			}, function (error, response, body) 
-				{
-			
-					console.log('response: ' +  JSON.stringify(response));
-					console.log('body: ' + body);
-					
-					resp.writeHead(200, {"Content-Type": "text/plain"});
-					resp.end(body);
-			
-				}
-		);		  
-			
+//-------------- New data source to be added to the interface
+app.post('/newdatasource', (req, resp) => {
+	var txt_box1 = req.body.txtstring;
+	console.log(txt_box1);
 	
 });
 

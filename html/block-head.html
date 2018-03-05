@@ -1,19 +1,31 @@
+<!--[0]-->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Header</title>   
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script> 
-	<link rel='stylesheet' type='text/css' href='"../css/style.css'>
+	<link rel='stylesheet' type='text/css' href='./css/style.css'>
 </head>
 <body>
 <div class='container'>
 
 	<div class='banner-row'>
-		<h1>Cloud Portal Interface Control 17</h1>
+		<h1>Cloud Portal Interface Control 2</h1>
 	</div>
 
 	<div class = 'container-datasources'>
-		<button onclick=''>Add datasource</button>
-	</div>
-	<div class = 'container-datasources'>
-		<button onclick=''>Add datasource</button>
+		<div class = 'new-sources'>
+			Please choose a new data source.
+			<select id='dataSource'>
+				  <option value="nil">Please select</option>
+				  <option value="freeagent">FreeAgent</option>
+				  <option value="xero">Xero</option>
+				  <option value="quickbooks">QuickBooks</option>
+				  <option value="spreadsheet">Spreadsheet</option>
+			</select> 
+			<button onclick="addDatasource()">Add datasource</button>
+		</div>
+
+		<div class = 'selected-sources'>
+
+

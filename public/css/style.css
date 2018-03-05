@@ -18,29 +18,58 @@
 }
 
 h1 {
-  font-size: 24px;
-  color: #5b5b5b;
-  text-align:center;
+	font-size: 24px;
+	color: #5b5b5b;
+	text-align:center;
 }
-
-.entry-box {
-	
+h2 {
+	font-size: 24px;
+	color: #5b5b5b;
+	text-align:left;
+}
+p.boxlabel{
+	font-size: 16px;
+	color: #5b5b5b;
+	text-align:left;
+	margin:0;
+	display: block;
+}
+.new-source{
+	display: block;
+}
+.entry-box {	
 	display: inline-block;
-	width:100px;
+	width:200px;
 	height:20px;
 	border: 1px solid #000000;
+	margin:0;
+	padding: 5px;
 }
-.container-freeagent{
-	
-	max-width: 1200px;
-	min-height:200px;
-	padding:20px;
-	width:100%;
-	margin:0 auto;
-	-webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-	margin: 20px;
+#dataSource {
+	height:30px;
+	width:210px;
+	display: inline-block;
 	border: 1px solid #000000;
-	
+	margin:0;
+	padding:5px;
 }
+.btn-delete{	
+	margin-left:60px;
+}
+
+/*-------- freeagent control----------*/
+
+
+.fa-container{	
+	display: inline-block;
+	margin-right:10px;
+}
+.fa-steps{
+	width:100%;
+	min-height:20px;
+	border: 1px solid #000000;
+	margin:0;
+	padding: 5px;
+}
+	
+

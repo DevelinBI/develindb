@@ -1,0 +1,53 @@
+<!--[900]-->
+<script>
+
+function addDatasource() {
+    var source = $("#dataSource").val();
+	$.ajax({
+		type: 'POST',
+		url: '../newdatasource',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: source}),
+		success: function(result){}
+	});	
+}
+
+
+
+function submitData(){	
+	var inptxt1 = $("#box1").val();
+	$.ajax({
+		type: 'POST',
+		url: '../submitstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: inptxt1}),
+		success: function(result){$("#dest").html(result);}
+	});	
+}
+
+function refreshData(){
+	$.ajax({
+		type: 'GET',
+		url: '../refreshstring',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$("#dest").html(result);}
+	});	
+}
+
+function freeagentTokenrefresh(){
+	$.ajax({
+		type: 'GET',
+		url: '../freeagent',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: 'box1'}),
+		success: function(result){$("#token-response").html(result);}
+	});	
+}
+
+
+
+//url: 'https://sentiment-profile-dev.eu-gb.mybluemix.net/getstring'
+//url: 'http://localhost:3000/getstring'
+	
+</script>
