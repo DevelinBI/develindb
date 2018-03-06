@@ -33,13 +33,12 @@
 			<div class = 'source-wrapper' id='b1'>
 				<h2>FreeAgent</h2>
 				<div class='fa-help'>
-					<button onclick='fa-clientId-submit()'>Show steps</button>
-					<textarea id='fa-steps' class='fa-steps' rows='1' cols='20'></textarea>
+					<button onclick='faSteps()'>Show steps</button>
+					<div id='fa-step-count' class='step-count'>0</div>
+					<div id='fa-steps' class='fa-steps'></div>
 				</div>
 				<div class='fa-container'>
-					<p class='boxlabel'>Enter Client ID</p>
-					<textarea id='fa-clientID' class='entry-box' rows='1' cols='20'></textarea>
-					<button onclick='fa-clientId-submit()'>Submit client ID</button>
+					<button class='btn' onclick='fa_openGoogle()'>Click to start</button>
 				</div>
 				<div class='fa-container'>
 					<p class='boxlabel'>Enter Access Token</p>
@@ -48,10 +47,13 @@
 				<div class='fa-container'>				
 					<p class='boxlabel'>Enter Refresh Token</p>
 					<textarea id='fa-tokenRefresh' class='entry-box' rows='1' cols='20'></textarea>
-					<button onclick='fa-token-submit()'>Submit token</button>	
+					<button class='btn' onclick='fa-token-submit()'>Submit token</button>	
 				</div>
 				<div class='fa-container'>
-					<button class='btn-delete' onclick='fa-delete'>Delete data source</button>
+					<button class='btn' onclick='fa-reset'>Reset</button>
+				</div>
+				<div class='fa-container'>
+					<button class='btn' onclick='fa-delete'>Delete source</button>
 				</div>
 				<div class='clear'></div>	
 			</div>
@@ -62,12 +64,32 @@
 </html>
 
 
-NS INCLUDE A RESET BUTTON TO THE LEFT OF THE DELETE BUTTON AND THEN START WORK ON THE STEPS TO INTERFACE
+
 
 
 
 <!--[900]-->
 <script>
+
+function faSteps(){
+    
+	var count = $('#fa-step-count').html();
+	var newcount = Number(count)+1;
+	if (newcount ==6){newcount = 0}
+	$('#fa-step-count').text(newcount);
+	$.ajax({
+		type: 'POST',
+		url: '../fa-steps',
+		contentType: 'application/json',
+		data: JSON.stringify({txtstring: count}),
+		success: function(result){$('#fa-steps').html(result);}
+	});	
+	
+}
+
+function fa_openGoogle(){    
+		window.open("https://developers.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.freeagent.com/v2/token_endpoint&includeCredentials=unchecked");
+}
 
 function addDatasource() {
     var source = $('#dataSource').val();

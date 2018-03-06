@@ -98,17 +98,28 @@ var dbLink = 'dbs/' + databaseDefinition.id;
 var collLink = dbLink + '/colls/' + collectionDefinition.id;
 
 
-function newSource(type, err){
-	
+function newSource(type, err){	
 	//---------- Identify the location for the new code and read the max number in the index file that sits above this position
-	
-	
-	
-	
-	
-	
-	
 }
+
+
+//-------------- cycles through the JSON file containing FreeAgent token authorisation guidanc
+app.post('/fa-steps', (req, resp) => {
+	
+	var txtResponse;
+	var txtbox = req.body.txtstring;
+	var steps = require("./json/fa-steps.json");
+	if(txtbox=='0'){txtResponse = steps[0].s0;}
+	if(txtbox=='1'){txtResponse = steps[1].s1;}
+	if(txtbox=='2'){txtResponse = steps[2].s2;}
+	if(txtbox=='3'){txtResponse = steps[3].s3;}
+	if(txtbox=='4'){txtResponse = steps[4].s4;}
+	if(txtbox=='5'){txtResponse = steps[5].s5;}
+	if(txtbox=='6'){txtResponse = steps[6].s6;}
+	resp.writeHead(200, {"Content-Type": "text/plain"});
+	resp.end(txtResponse);
+
+});
 
 
 

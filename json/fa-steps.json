@@ -1,0 +1,7 @@
+[
+{"s0":"The starting point is the creation of an App within the developer portal at https://dev.freeagent.com/login. Once the App has been created, click on it within the portal to edit it, and two keys should become visible: 'OAuth identifier' and 'OAuth secret'.  <p></p><div class='step-image1'></div><p></p> Both are strings of text looking something like this 'MyeuHkExlB8nJrdx6mTDyA'.  Copy both keys and paste them into a Word document or a text editor as they are needed in the next step. Then click the 'click to start' button. A new web page will open and you will be greeted by the following:  <p></p><div class='step-image2'></div><p></p>  Click to agree, and you will then see the following: <p></p><div class='step-image3'></div><p></p> Click on the 'show steps' button to see the next set of instructions."},
+{"s1":"<p></p><div class='step-image4'></div><p></p>"},
+{"s2":"<p></p><div class='step-image5'></div><p></p>"},
+{"s3":"<p></p><div class='step-image6'></div><p></p>"},
+{"s4":"<p></p><div class='step-image7'></div><p></p>"}
+]
