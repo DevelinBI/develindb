@@ -3,9 +3,7 @@
 <html>
 <head>
 	<title>Header</title>   
-	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-	<script src="https://d3js.org/d3.v4.min.js"></script>
-	<script src="../js/d3test2.js"></script>
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script> 
 	<link rel='stylesheet' type='text/css' href='./css/style.css'>
 </head>
 <body>
@@ -13,7 +11,6 @@
 
 	<div class='banner-row'>
 		<h1>Cloud Portal Interface Control 2</h1>
-		<h1 id='company'>Company AAA</h1>
 	</div>
 
 	<div class = 'container-datasources'>
@@ -24,15 +21,43 @@
 				  <option value='freeagent'>FreeAgent</option>
 				  <option value='xero'>Xero</option>
 				  <option value='quickbooks'>QuickBooks</option>
-				  <option value='excel'>Excel</option>
+				  <option value='spreadsheet'>Spreadsheet</option>
 			</select> 
 			<button class='new-source' onclick='addDatasource()'>Add datasource</button>
 		</div>
 
-		<div id='sources' class = 'selected-sources'>
+		<div class = 'selected-sources'>
 
 
-
+<!--[1]-->
+			<div class = 'source-wrapper' id='b1'>
+				<h2>FreeAgent</h2>
+				<div class='fa-help'>
+					<button onclick='faSteps()'>Show steps</button>
+					<div id='fa-step-count' class='step-count'>0</div>
+					<div id='fa-steps' class='fa-steps'></div>
+				</div>
+				<div class='fa-container'>
+					<button class='btn' onclick='fa_openGoogle()'>Click to start</button>
+				</div>
+				<div class='fa-container'>
+					<p class='boxlabel'>Enter Access Token</p>
+					<textarea id='fa-tokenAccess' class='entry-box' rows='1' cols='20'></textarea>
+				</div>
+				<div class='fa-container'>				
+					<p class='boxlabel'>Enter Refresh Token</p>
+					<textarea id='fa-tokenRefresh' class='entry-box' rows='1' cols='20'></textarea>
+					<button class='btn' onclick='fa-token-submit()'>Submit token</button>	
+				</div>
+				<div class='fa-container'>
+					<button class='btn' onclick='fa-reset'>Reset</button>
+				</div>
+				<div class='fa-container'>
+					<button class='btn' onclick='fa-delete'>Delete source</button>
+				</div>
+				<div class='clear'></div>	
+			</div>
+<!--[800]-->		
 		</div>
 </div>
 </body>
@@ -42,35 +67,9 @@
 
 
 
+
 <!--[900]-->
 <script>
-
-$(document).ready(function(){ 
-    var company = $('#company').html();
-	var strSend = JSON.stringify({company: company});
-	$.ajax({
-		type: 'POST',
-		url: '../refresh',
-		contentType: 'application/json',
-		data: strSend,
-		success: function(result){loadData(result);} 
-	});		
-})
-
-function addDatasource() {
-    var company = $('#company').html();
-	var source = $('#dataSource').val();
-	var strSend = JSON.stringify({company: company, source: source, count: 1});
-	$.ajax({
-		type: 'POST',
-		url: '../newdatasource',
-		contentType: 'application/json',
-		data: strSend,
-		success: function(result){location.reload()}  
-	});		
-}
-
-
 
 function faSteps(){
     
@@ -92,7 +91,6 @@ function fa_openGoogle(){
 		window.open("https://developers.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.freeagent.com/v2/token_endpoint&includeCredentials=unchecked");
 }
 
-/*
 function addDatasource() {
     var source = $('#dataSource').val();
 	$.ajax({
@@ -103,7 +101,7 @@ function addDatasource() {
 		success: function(result){}
 	});	
 }
-*/
+
 
 
 function submitData(){	

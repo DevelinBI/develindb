@@ -10,6 +10,14 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var fs = require('fs');
 var request = require("request");
+var d3 = require('d3');
+//var jsdom = require('jsdom');
+var jsdom;
+try {
+  jsdom = require("jsdom/lib/old-api.js"); // jsdom >= 10.x
+} catch (e) {
+  jsdom = require("jsdom"); // jsdom <= 9.x
+}
 
 
 //---------------  set the server to listen
@@ -75,7 +83,7 @@ var publicDir = path.join(__dirname, 'public');
 
 
 
-
+//NS CREATE A LIST OF APIS WITHIN THE INDEX PAGE.  AS EACH IS CREATED AN API NAME IS CREATED IN THE APIS JSON FILE AND A SEPARATE JSON FILE OF THE SAME NAME IS CREATED WITHIN WHICH THE DETAILS ARE HELD.  AND AN INDEX PAGE IS CREATED FOR THE API - OF THE SAME NAME
 
 
 
@@ -93,14 +101,151 @@ var masterKey = "XwOJ5m9wao57sUj7d1rzdv6Fx9xPrR0C2M0cI6JGWyI4SJ0XW1CwdSrvAwHxDqK
 var client = new DocumentClient(host, {masterKey: masterKey});
 
 var databaseDefinition = { id: "clientDb" };
-var collectionDefinition = { id: "interface-col" };
 var dbLink = 'dbs/' + databaseDefinition.id;
-var collLink = dbLink + '/colls/' + collectionDefinition.id;
 
 
-function newSource(type, err){	
-	//---------- Identify the location for the new code and read the max number in the index file that sits above this position
-}
+//--------------populate the index page on refresh
+app.post("/refresh", function (req, resp) {
+
+	var collLink = dbLink + '/colls/' + 'interface-col';
+	var input = req.body;
+	console.log(input); 
+	var company = input.company;
+	
+	//Call down the documents from the interface collection
+	var querySpec = 
+	{
+		query: "SELECT i.source as source, i.count as count FROM docs i WHERE  i.company = '" + company + "'"
+	};
+
+	client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
+
+	if (err) {
+				console.log("Error returning the document: " + JSON.stringify(err));
+			} 
+	
+	else  
+			{
+				//Check to see whether there is already a record of the datasource of the type and company in question
+				if(Object.keys(results[0]).length  == 0)
+				{
+					resp.writeHead(200, {"Content-Type": "text/plain"});
+					resp.end('empty');
+				}					
+
+				else
+				{
+					resp.writeHead(200, {"Content-Type": "text/plain"});
+					resp.end(JSON.stringify(results));
+				}
+			}
+
+	});					
+
+});
+
+
+//-------------- New data source to be added to the interface
+app.post('/newdatasource', (req, resp) => {
+	
+	var collLink = dbLink + '/colls/' + 'interface-col';
+	var input = req.body;
+	console.log(input); 
+	var company = input.company;
+	var source = input.source;
+	var count = 1;
+	
+	//---- establish the next id for the type of interface required
+	//structure for the metadata interface is:  { company: 'Company AAA', source: 'quickbooks', count: 0 }  within collection interface-col
+	
+	 if (input.length!==0)
+		 {		
+				
+				//Check if exists
+				var querySpec = {
+					query: "SELECT MAX(i.count) FROM docs i WHERE  i.company = '" + company + "' AND i.source = '" + source + "'"
+				};	
+
+				client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
+
+					if (err) {
+								console.log("Error returning the document: " + JSON.stringify(err));
+							} 
+					//There is either no reference to the data source for the company, therefore create one - with the count figure at 1.  Or there is a max count, therefore create a document with count++
+					else  
+							{
+								//Check to see whether there is already a record of the datasource of the type and company in question
+								if(Object.keys(results[0]).length  == 0)
+								{
+									console.log("{}result: " + JSON.stringify(results));
+									count=1;
+								}
+								
+								//If so increment the count by one
+								else
+								{
+									console.log("{..}result: " + JSON.stringify(results));
+									count = Number(results[0].$1) + 1;																		
+								}
+								
+								//Create the record
+								input.count = count;
+								console.log ("Creating: " + JSON.stringify(input));
+								client.createDocument(collLink, input, function (err, document) {
+									if (err) {
+										console.log("Error creating document: " + JSON.stringify(err));
+									} 
+								});
+															
+							
+								//Refresh the list of data sources							
+								var querySpec = 
+									{
+										query: "SELECT i.source as source, i.count as count FROM docs i WHERE  i.company = '" + company + "'"
+									};
+
+									client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
+
+										if (err) {
+													console.log("Error returning the document: " + JSON.stringify(err));
+												} 
+										
+										else  
+												{
+													//Check to see whether there is already a record of the datasource of the type and company in question
+													if(Object.keys(results[0]).length  == 0)
+													{
+														resp.writeHead(200, {"Content-Type": "text/plain"});
+														resp.end('empty');
+													}					
+
+													else
+													{
+														resp.writeHead(200, {"Content-Type": "text/plain"});
+														resp.end('reload');
+													}
+												}
+
+									});				
+							
+							} 
+
+				});					
+												
+			
+			
+		}
+	else
+		{
+			
+			resp.writeHead(200, {"Content-Type": "text/plain"});
+			resp.end('No text entered');
+			
+		} 
+	
+});
+
+NS ALLOW NAME TO BE ENTERED AND CHANGE THE JS FILE NAME
 
 
 //-------------- cycles through the JSON file containing FreeAgent token authorisation guidanc
@@ -217,12 +362,7 @@ app.get('/refreshstring', (req, resp) => {
 });
 
 
-//-------------- New data source to be added to the interface
-app.post('/newdatasource', (req, resp) => {
-	var txt_box1 = req.body.txtstring;
-	console.log(txt_box1);
-	
-});
+
 
 
 
