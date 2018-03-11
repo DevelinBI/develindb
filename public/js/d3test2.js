@@ -3,7 +3,7 @@ function loadData(data){
 	
 	var data=JSON.parse(data);
 
-	var columns = ['source', 'count'];
+	var columns = ['name', 'source', 'count', 'del'];
 
 	d3.select("#tbl-sources").remove();
 	var table = d3.select('#sources').append('table').attr("id","tbl-sources");
@@ -27,9 +27,17 @@ function loadData(data){
 	var cells = rows.selectAll('td')
 	.data(function (row) 
 	{
-		return columns.map(function (column) {
-		return {column: column, value: row[column]};
-		});
+		return columns.map(function (column) 
+			{
+				if (column !== 'del')
+				{
+					return {column: column, value: row[column]};
+				}
+				else
+				{
+					return {column: column, value: 'del'};
+				}
+			});
 	})
 	.enter()
 	.append('td')

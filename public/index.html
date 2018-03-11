@@ -5,7 +5,7 @@
 	<title>Header</title>   
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
-	<script src="../js/d3test2.js"></script>
+	<script src="../js/d3sourceLoad.js"></script>
 	<link rel='stylesheet' type='text/css' href='./css/style.css'>
 </head>
 <body>
@@ -26,6 +26,9 @@
 				  <option value='quickbooks'>QuickBooks</option>
 				  <option value='excel'>Excel</option>
 			</select> 
+			<p class='new-source'>Please select a unique name for the source.</p>
+			<textarea id='source-name' class='new-source' rows='1' cols='30'></textarea>
+
 			<button class='new-source' onclick='addDatasource()'>Add datasource</button>
 		</div>
 
@@ -53,21 +56,38 @@ $(document).ready(function(){
 		url: '../refresh',
 		contentType: 'application/json',
 		data: strSend,
-		success: function(result){loadData(result);} 
+		success: function(result)
+		{
+			if(result !== 'empty')
+			{loadData(result);}
+			else{console.log('stopped');}
+		} 
 	});		
 })
 
 function addDatasource() {
     var company = $('#company').html();
 	var source = $('#dataSource').val();
-	var strSend = JSON.stringify({company: company, source: source, count: 1});
-	$.ajax({
-		type: 'POST',
-		url: '../newdatasource',
-		contentType: 'application/json',
-		data: strSend,
-		success: function(result){location.reload()}  
-	});		
+	var sourceName = $('#source-name').val();
+	if (sourceName.length == 0)
+	{
+		window.alert("Please enter a name for the source");
+	}
+	else if (source == 'nil')
+	{
+		window.alert("Please enter a source type");
+	}
+	else
+	{
+		var strSend = JSON.stringify({name: sourceName, company: company, source: source, count: 1});
+		$.ajax({
+			type: 'POST',
+			url: '../newdatasource',
+			contentType: 'application/json',
+			data: strSend,
+			success: function(result){location.reload()}  
+		});
+	}	
 }
 
 

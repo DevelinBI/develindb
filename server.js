@@ -10,14 +10,6 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var fs = require('fs');
 var request = require("request");
-var d3 = require('d3');
-//var jsdom = require('jsdom');
-var jsdom;
-try {
-  jsdom = require("jsdom/lib/old-api.js"); // jsdom >= 10.x
-} catch (e) {
-  jsdom = require("jsdom"); // jsdom <= 9.x
-}
 
 
 //---------------  set the server to listen
@@ -28,51 +20,6 @@ app.use(bodyParser.json());
 var publicDir = path.join(__dirname, 'public');
 
 
- /* app.get("/", function (req, resp) {
-
-	var blocks = require('./html/blocks.json');	
-	var html;
-	var htmlArray=[];
-	
-	var blockcount = Object.keys(blocks).length;
-	
-	Object.keys(blocks).forEach(function(key) {
-
-		fs.readFile('./html/' + blocks[key] + '.html',null, function(error, data){
-			if(error){
-				resp.writeHead(404, {"Content-Type": "text/plain"});
-				resp.write('file not found');
-			}
-			else{					
-
-				htmlArray.push(data);
-				if(htmlArray.length==blockcount){
-
-					htmlArray.sort();
-					for (let j = 0; j < blockcount; j++) {	
-		
-						if(html == undefined){html = htmlArray[j];}
-						else{
-							html = html + htmlArray[j];
-						}							
-				
-						if (j == blockcount - 1){
-							
-							fs.writeFile('./public/index.html', html, function (err) {
-								if (err) {console.log(err);}
-								else{
-									resp.sendFile(path.join(publicDir, 'index.html'));
-									app.use(express.static(path.join(__dirname, 'public')));
-								}
-							});
-						}	
-					}						
-				}
-			}	
-		});
-	});	
-});   */
-
  app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)
@@ -80,11 +27,6 @@ var publicDir = path.join(__dirname, 'public');
 
   console.log(`server is listening on ${port}`);
 }) 
-
-
-
-//NS CREATE A LIST OF APIS WITHIN THE INDEX PAGE.  AS EACH IS CREATED AN API NAME IS CREATED IN THE APIS JSON FILE AND A SEPARATE JSON FILE OF THE SAME NAME IS CREATED WITHIN WHICH THE DETAILS ARE HELD.  AND AN INDEX PAGE IS CREATED FOR THE API - OF THE SAME NAME
-
 
 
 
@@ -115,7 +57,7 @@ app.post("/refresh", function (req, resp) {
 	//Call down the documents from the interface collection
 	var querySpec = 
 	{
-		query: "SELECT i.source as source, i.count as count FROM docs i WHERE  i.company = '" + company + "'"
+		query: "SELECT i.company, i.name, i.source as source, i.count as count FROM docs i WHERE  i.company = '" + company + "'"
 	};
 
 	client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
@@ -127,8 +69,10 @@ app.post("/refresh", function (req, resp) {
 	else  
 			{
 				//Check to see whether there is already a record of the datasource of the type and company in question
-				if(Object.keys(results[0]).length  == 0)
+				console.log("Empty recordset 1: " + JSON.stringify(results));
+				 if(results[0] == null)
 				{
+					console.log("Empty recordset 2: " + JSON.stringify(err))
 					resp.writeHead(200, {"Content-Type": "text/plain"});
 					resp.end('empty');
 				}					
@@ -137,7 +81,7 @@ app.post("/refresh", function (req, resp) {
 				{
 					resp.writeHead(200, {"Content-Type": "text/plain"});
 					resp.end(JSON.stringify(results));
-				}
+				} 
 			}
 
 	});					
@@ -145,7 +89,7 @@ app.post("/refresh", function (req, resp) {
 });
 
 
-//-------------- New data source to be added to the interface
+//-------------- New data source to be added to the interface.  Once added there is no return back from the database.  The POST return simply triggers a refresh of the index page which is the action that brings the contents of the interface collection down
 app.post('/newdatasource', (req, resp) => {
 	
 	var collLink = dbLink + '/colls/' + 'interface-col';
@@ -153,15 +97,15 @@ app.post('/newdatasource', (req, resp) => {
 	console.log(input); 
 	var company = input.company;
 	var source = input.source;
+	var name = input.name;
 	var count = 1;
 	
 	//---- establish the next id for the type of interface required
 	//structure for the metadata interface is:  { company: 'Company AAA', source: 'quickbooks', count: 0 }  within collection interface-col
 	
 	 if (input.length!==0)
-		 {		
-				
-				//Check if exists
+		 {				
+				//Check if the type of source exists for the company in question
 				var querySpec = {
 					query: "SELECT MAX(i.count) FROM docs i WHERE  i.company = '" + company + "' AND i.source = '" + source + "'"
 				};	
@@ -171,7 +115,7 @@ app.post('/newdatasource', (req, resp) => {
 					if (err) {
 								console.log("Error returning the document: " + JSON.stringify(err));
 							} 
-					//There is either no reference to the data source for the company, therefore create one - with the count figure at 1.  Or there is a max count, therefore create a document with count++
+					//Either there is no reference to the data source for the company, therefore the code creates one - with the count figure at 1.  Or there is a max count in which case the code creates a document with count++
 					else  
 							{
 								//Check to see whether there is already a record of the datasource of the type and company in question
@@ -186,67 +130,88 @@ app.post('/newdatasource', (req, resp) => {
 								{
 									console.log("{..}result: " + JSON.stringify(results));
 									count = Number(results[0].$1) + 1;																		
-								}
+								}								
+
+								
+								//Check that the name is unique
+								var querySpec = {
+									query: "SELECT MAX(i.count) FROM docs i WHERE  i.company = '" + company + "' AND i.name = '" + name + "'"
+								};
+								client.queryDocuments(collLink, querySpec).toArray(function (err, namecheck) {
+									if(Object.keys(namecheck[0]).length  !== 0)
+									{
+										
+										input.name = name + '-' + count;
+										console.log('here: ' + input.name)
+									}
+								});
 								
 								//Create the record
 								input.count = count;
-								console.log ("Creating: " + JSON.stringify(input));
+								console.log ("Creating: " + JSON.stringify(input));									
+								
 								client.createDocument(collLink, input, function (err, document) {
 									if (err) {
 										console.log("Error creating document: " + JSON.stringify(err));
 									} 
 								});
-															
-							
-								//Refresh the list of data sources							
-								var querySpec = 
-									{
-										query: "SELECT i.source as source, i.count as count FROM docs i WHERE  i.company = '" + company + "'"
-									};
-
-									client.queryDocuments(collLink, querySpec).toArray(function (err, results) {		
-
-										if (err) {
-													console.log("Error returning the document: " + JSON.stringify(err));
-												} 
-										
-										else  
-												{
-													//Check to see whether there is already a record of the datasource of the type and company in question
-													if(Object.keys(results[0]).length  == 0)
-													{
-														resp.writeHead(200, {"Content-Type": "text/plain"});
-														resp.end('empty');
-													}					
-
-													else
-													{
-														resp.writeHead(200, {"Content-Type": "text/plain"});
-														resp.end('reload');
-													}
-												}
-
-									});				
+								resp.writeHead(200, {"Content-Type": "text/plain"});
+								resp.end('reload');							
 							
 							} 
-
-				});					
-												
-			
-			
+				});		
 		}
 	else
-		{
-			
+		{			
 			resp.writeHead(200, {"Content-Type": "text/plain"});
-			resp.end('No text entered');
-			
-		} 
-	
+			resp.end('No text entered');			
+		} 	
 });
 
-NS ALLOW NAME TO BE ENTERED AND CHANGE THE JS FILE NAME
+//-------------- delete data source
+app.post('/deldatasource', (req, resp) => {
+	
+	var collLink = dbLink + '/colls/' + 'interface-col';
+	var company = req.body.company;
+	var name = req.body.name;
+	console.log('delete source: ' + company + ' : ' + name);
 
+	 if (name.length!==0)
+		{				
+				//Establish id for the named source to be deleted
+				var querySpec = {
+					query: "SELECT i.id FROM docs i WHERE  i.company = '" + company + "' AND i.name = '" + name + "'"
+				};	
+
+				client.queryDocuments(collLink, querySpec).toArray(function (err, results) {
+					
+					if(Object.keys(results[0]).length  !== 0)
+						{
+							for (let j = 0; j < Object.keys(results[0]).length; j++) {	
+								
+					
+									var docLink = collLink + '/docs/' + results[j].id;
+									client.deleteDocument(docLink, function (err) 
+									{
+										if(err)
+											{
+											console.log('delete error: ' + JSON.stringify(err));
+											}
+										
+										else
+											{
+											console.log('Source deleted');
+											}
+									});					
+							}
+						}
+				});
+
+		resp.writeHead(200, {"Content-Type": "text/plain"});
+		resp.end('reload');
+		}
+
+});
 
 //-------------- cycles through the JSON file containing FreeAgent token authorisation guidanc
 app.post('/fa-steps', (req, resp) => {
