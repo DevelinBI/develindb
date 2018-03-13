@@ -1,9 +1,10 @@
 function loadData(data){
 
+	// Set up the css
+	var listlabel1 = 'listlabel1', listlabel2 = 'listlabel2';
 	
 	var data=JSON.parse(data);
-
-	var columns = ['company', 'name', 'source', 'count', 'del'];
+	var columns = ['company', 'name', 'source', 'count', 'edit', 'del'];
 
 	d3.select("#tbl-sources").remove();
 	var table = d3.select('#sources').append('table').attr("id","tbl-sources");
@@ -15,7 +16,15 @@ function loadData(data){
 	.selectAll('th')
 	.data(columns).enter()
 	.append('th')
-	.text(function (column) { return column; });
+	.text(function (column) 
+		{ 
+			if(column !== 'del' && column !== 'edit'){return column;}
+		})
+	.attr('class', function (d) 
+		{
+			if(d == 'company' || d == 'name' || d == 'source'){return listlabel1;}
+			else{return listlabel2;}
+		});
 
 	// create a row for each object in the data
 	var rows = tbody.selectAll('tr')
@@ -29,13 +38,17 @@ function loadData(data){
 	{
 		return columns.map(function (column) 
 			{
-				if (column !== 'del')
+				if (column == 'del')
 				{
-					return {column: column, value: row[column]};
+					return {column: column, value: row['company'] + ':' + row['name']};
+				}
+				else if	(column == 'edit')			
+				{
+					return {column: column, value: "c." + row['company'] + ",n." + row['name'] + ",s." + row['source'] };
 				}
 				else
 				{
-					return {column: column, value: row['company'] + ':' + row['name']};
+					return {column: column, value: row[column]};
 				}
 			});
 	})
@@ -44,11 +57,16 @@ function loadData(data){
 	.text(function (d) { return d.value; })
 	.attr('id', function (d) 
 		{ 			
-			if(d.column == 'name' || d.column == 'del'){return d.value;}			
+			if(d.column == 'edit' || d.column == 'del'){return d.value;}			
 		})
+	//Set the classes for each column
 	.attr('class', function (d) 
 		{							
-			if(d.column == 'del'){return 'btn-delete';}
+			if(d.column == 'company' || d.column == 'source'){return listlabel1;}
+			else if(d.column == 'name'){return listlabel1;}
+			else if(d.column == 'count'){return listlabel2;}
+			else if(d.column == 'edit'){return 'btn-edit' + ' ' + 'pointer';}
+			else if(d.column == 'del'){return 'btn-delete' + ' ' + 'pointer';}
 	
 		})
 	.on("click", function(d) 
@@ -66,27 +84,26 @@ function loadData(data){
 				if (confirm == 'yes'){deleteSource(company, name);}
 				
 			}
+			if(d.column == 'edit')
+			{
+				var id = this.id;
+							
+				var cPos = id.search("c.");
+				var nPos = id.search(",n.");				
+				var sPos = id.search(",s.");
+
+				var company = id.substring(cPos + 2, nPos).trim();
+				var name = id.substring(nPos + 3, sPos).trim();
+				var source = id.substring(sPos + 3, id.length).trim();
+
+				openSource(company, name, source);	
+			}
 		});
 	
-	
-	/* .attr('id', function (d) { return d.column + ":" + d.row; })
-						.text(function (d) { if(typeof d.value === 'undefined'){return '-';} else { if(isNumeric(d.value) && this.id.search("row") == -1) {return formatComma(d.value);} else {return d.value;}} })						
-						.attr('class', function (d) {							
-							if(d.column == 'Income Variance_revised' && d.row >= 7){return planCell;}
-							else if(d.column == 'Income Variance' && d.row >= 7){return planCell_noBackground;}							
-							else if(d.column.search("total") > -1 ){return col_rowtotal;} 
-							else if(d.column.search("row") > -1 ){return col_rowlabel;}
-							else {return cell;}	
-							})						
-						.on("mouseover", function(d){d3.select(this).attr('class',this.className + ' ' + cellMouseOver);mouseover_text([this.id]);})
-						.on("mouseout", function(d){d3.select(this).attr('class', this.className.replace(cellMouseOver, ''));mouseover_text(['none']);}); */
-
-
 }	
 	
 function deleteSource(company, name){ 
 	
-		console.log('fn clicked company: ' + company + '  fn clicked name: ' + name);
 		$.ajax({
 			type: 'POST',
 			url: '../deldatasource',
@@ -95,7 +112,15 @@ function deleteSource(company, name){
 			success: function(result){location.reload()}  		
 		});	
 	
-}							
+}
+function openSource(company, name, source){ 
+	
+		console.log('fn clicked company: ' + company + '  fn clicked name: ' + name);
+		window.open("http://localhost:3000/api/" + source + ".html", "[source:" + source + ",name:" + name + ",company:" + company + "]", "location=1,toolbar=1,menubar=1,resizable=1,width=1200,height=1200,top=50, left=50");
+	
+}
+
+		
 							
 function confirmAction(name) {
     var txt;

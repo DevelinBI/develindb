@@ -60,7 +60,6 @@ $(document).ready(function(){
 		{
 			if(result !== 'empty')
 			{loadData(result);}
-			else{console.log('stopped');}
 		} 
 	});		
 })
@@ -85,12 +84,26 @@ function addDatasource() {
 			url: '../newdatasource',
 			contentType: 'application/json',
 			data: strSend,
-			success: function(result){location.reload()}  
+			success: function(result)
+			{
+				location.reload();
+				result = JSON.parse(result);
+				setupOpen(result);
+			}  
 		});
 	}	
 }
 
 
+function setupOpen(result) {
+	window.open("http://localhost:3000/api/" + result.source + ".html", "[source:" + result.source + ",name:" + result.name + ",company:" + result.company + "]", "location=1,toolbar=1,menubar=1,resizable=1,width=1200,height=1200,top=50, left=50");
+	
+}
+
+
+
+
+//=========================================
 
 function faSteps(){
     

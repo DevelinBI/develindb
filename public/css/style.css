@@ -21,32 +21,63 @@ body, html{
 }
 
 h1 {
+	font:24px/30px 'Varela Round', sans-serif;
 	font-size: 24px;
 	color: #5b5b5b;
 	text-align:center;
 }
 h2 {
-	font-size: 24px;
+	font:20px/24px 'Varela Round', sans-serif;
 	color: #5b5b5b;
 	text-align:left;
 }
-p.boxlabel{
-	font-size: 16px;
+p{
+	font:16px/22px 'Varela Round', sans-serif;
+}
+p.boxlabel, p.help{
 	color: #5b5b5b;
 	text-align:left;
 	margin:0;
 	display: block;
 }
+.listlabel1{
+	font:16px/22px 'Varela Round', sans-serif;
+	width:200px;
+	color: #5b5b5b;
+	margin:0;
+	display: inline-block;
+	margin-right:20px;
+	text-align: left;
+}
+.listlabel1:hover{
+	background: #ccc;
+}
+.listlabel2{
+	font:16px/22px 'Varela Round', sans-serif;
+	width:60px;
+	color: #5b5b5b;
+	margin:0;
+	display: inline-block;
+	margin-right:20px;
+	text-align: center;
+}
+
 .new-source{
 	display: block;
 }
 .entry-box {	
 	display: inline-block;
+	position: relative;
+	top: 10px;
+	height: 18px;
 	width:200px;
-	height:20px;
 	border: 1px solid #000000;
-	margin:0;
 	padding: 5px;
+}
+.btn{	
+	width:120px;
+	height:30px;
+	
 }
 #dataSource {
 	height:30px;
@@ -56,21 +87,53 @@ p.boxlabel{
 	margin:0;
 	padding:5px;
 }
-.btn{	
-	width:120px;
-	height:30px;
-}
+
 .btn-delete{	
-	background:#ccc;
+	background: url("../img/btnDelete.jpg") no-repeat right;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+	font-size: 0;
+	width: 80px;
+	height: 14px;
 }
+.btn-edit{	
+	background: url("../img/btnEdit.jpg") no-repeat left;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+	font-size: 0;
+	width: 80px;
+	height: 18px;
+}
+.pointer {
+	cursor: pointer;
+}
+
 
 /*-------- freeagent control----------*/
-
-
-.fa-container{	
+#fa-header, #fa-company, #fa-name{
 	display: inline-block;
+}
+#fa-header{
 	margin-right:10px;
-	padding-top:10px;
+}
+#fa-company{
+	margin-right:30px;
+}
+
+.fa-container1{	
+	display: inline-block;
+}
+.fa-container2{	
+	display: inline-block;
+	float: right;
+	padding-top:28px;
+}
+.fa-help{
+	margin-top:10px;
 }
 .fa-steps{
 	width:100%;
@@ -82,83 +145,26 @@ p.boxlabel{
 	margin:0;
 	padding: 5px;
 }
-.step-image1{
+.step-image1{background: url("../img/fa-img1.jpg");}
+.step-image2{background: url("../img/fa-img-google1.jpg");}
+.step-image3{background: url("../img/fa-img-google2.jpg");}
+.step-image4{background: url("../img/fa-img-google3.jpg");}
+.step-image5{background: url("../img/fa-img2.jpg");}
+.step-image6{background: url("../img/fa-img-google4.jpg");}
+.step-image7{background: url("../img/fa-img-google5.jpg");}
+
+.step-image1, .step-image2, .step-image3, .step-image4, .step-image5, .step-image6, .step-image7{
 	
 	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img1.jpg");
+	padding: 25px;	
+	-webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;	
 	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
+	min-height:500px;
 }
-.step-image2{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img-google1.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
-.step-image3{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img-google2.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
-.step-image4{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img2.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
-.step-image5{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img-google3.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
-.step-image6{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img-google4.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
-.step-image7{
-	
-	border: 2px solid black;
-	padding: 25px;
-	background: url("../img/fa-img-google5.jpg");
-	background-repeat: no-repeat;
-	background-size: auto;
-	min-width:400px;
-	min-height:400px;
-	
-}
+
 .step-count{
 	color:#FFFFFF;
 	font-size:1px;
