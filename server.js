@@ -41,8 +41,7 @@ var publicDir = path.join(__dirname, 'public');
 //------------------ 1.  setup the interface collection connection.
 
 var DocumentClient = require('documentdb').DocumentClient;
-var host = "https://develindb.documents.azure.com:443/";                     
-var masterKey = "XwOJ5m9wao57sUj7d1rzdv6Fx9xPrR0C2M0cI6JGWyI4SJ0XW1CwdSrvAwHxDqK2npaPifCALNlIJu2fmTYeGA==";
+[KEYS HERE]
 var client = new DocumentClient(host, {masterKey: masterKey});
 
 var databaseDefinition = { id: "clientDb" };
