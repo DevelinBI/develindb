@@ -16,8 +16,16 @@
 	<h2 id='fa-header'>Company:</h2><h2 id='fa-company'></h2><h2 id='fa-header'>API Name:</h2><h2 id='fa-name'></h2>
 	<div class = 'source-wrapper' id='b1'>
 		<div class='fa-container1'>
-			<button class='btn' onclick='fa_openGoogle()'>Click to start</button>
+			<button class='btn' onclick='faOpenGoogle()'>Open Google setup</button>
 		</div>	
+		<div class='fa-container1'>
+			<p class="boxlabel">Enter the Client ID</p>
+			<textarea id='fa-tokenID' class='entry-box' rows='1' cols='20'></textarea>		
+		</div>	
+		<div class='fa-container1'>
+			<p class="boxlabel">Enter the Secret Token</p>
+			<textarea id='fa-tokenSecret' class='entry-box' rows='1' cols='20'></textarea>
+		</div>
 		<div class='fa-container1'>
 			<p class="boxlabel">Enter the Access Token</p>
 			<textarea id='fa-tokenAccess' class='entry-box' rows='1' cols='20'></textarea>		
@@ -26,12 +34,11 @@
 			<p class="boxlabel">Enter the Refresh Token</p>
 			<textarea id='fa-tokenRefresh' class='entry-box' rows='1' cols='20'></textarea>
 		</div>
-		<div class='fa-container1'>
-			<button class='btn' onclick='fa_tokenSubmit()'>Submit token</button>	
-		</div>
-		<div class='fa-container2'>		
-			<button class='btn' onclick='fa_reset'>Reset</button>
-			<button class='btn' onclick='fa_delete'>Delete source</button>
+		<div class='clear'></div>
+		<div class='fa-container2'>
+			<button class='btn' onclick='faTokenSubmit()'>Submit tokens</button>
+			<button class='btn' onclick='faRefresh()'>Refresh data</button>
+			<p id="progresslabel"></p>
 		</div>
 		<div class='clear'></div>	
 		<div class='fa-help'>
@@ -67,24 +74,38 @@ $(document).ready(function(){
 	 $('#fa-name').html(iname);
 })
 
-function fa_tokenSubmit() {
+function faRefresh(){
+  
+    var company = $('#fa-company').html();
+	var source = 'freeagent';
+	var sourceName = $('#fa-name').html(); 
+	var strSend = JSON.stringify({name: sourceName, company: company, source: source});	
+	$.ajax({
+		type: 'POST',
+		url: '../fa-datarefresh',
+		contentType: 'application/json',
+		data: strSend,
+		success: function(result){$('#progresslabel').html(result);}
+	});	
+	
+}
+
+function faTokenSubmit() {
     var company = $('#fa-company').html();
 	var source = 'freeagent';
 	var sourceName = $('#fa-name').html();
 	var accessToken = $('#fa-tokenAccess').val();
 	var refreshToken = $('#fa-tokenRefresh').val();
+	var clientID = $('#fa-tokenID').val();
+	var secretToken = $('#fa-tokenSecret').val();
 	
-	if (accessToken.length == 0 || accessToken == 'Token submitted')
+	if (accessToken.length == 0 || accessToken == 'Token submitted' || refreshToken.length == 0  || refreshToken == 'Token submitted' || clientID.length == 0  || clientID == 'Token submitted' || secretToken.length == 0  || secretToken == 'Token submitted')
 	{
-		window.alert("Please enter an Access Token");
-	}
-	else if (refreshToken.length == 0  || refreshToken == 'Token submitted')
-	{
-		window.alert("Please enter a Refresh Token");
+		window.alert("Please enter all four tokens - the Client ID, and the Secret, Access, and Refresh tokens.");
 	}
 	else
 	{
-		var strSend = JSON.stringify({name: sourceName, company: company, source: source, accessToken: accessToken, refreshToken: refreshToken });
+		var strSend = JSON.stringify({name: sourceName, company: company, source: source, clientID: clientID, secretToken: secretToken, accessToken: accessToken, refreshToken: refreshToken });
 		$.ajax({
 			type: 'POST',
 			url: '../fa-token-submit',
@@ -94,6 +115,8 @@ function fa_tokenSubmit() {
 			{
 				$('#fa-tokenAccess').val(result);
 				$('#fa-tokenRefresh').val(result);
+				$('#fa-tokenID').val(result);
+				$('#fa-tokenSecret').val(result);
 			}  
 		});
 	}	
@@ -115,9 +138,10 @@ function faSteps(){
 	
 }
 
-function fa_openGoogle(){    
-		window.open("https://developers.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.freeagent.com/v2/token_endpoint&includeCredentials=unchecked");
+function faOpenGoogle(){    
+		window.open("https://developers.google.com/oauthplayground/#step3&url=https%3A//&content_type=application/json&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Custom&oauthAuthEndpointValue=https%3A//api.freeagent.com/v2/approve_app&oauthTokenEndpointValue=https%3A//api.freeagent.com/v2/token_endpoint&includeCredentials=unchecked","","width=800,height=800");
 }
+
 
 	
 </script>

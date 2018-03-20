@@ -42,7 +42,7 @@ p.boxlabel, p.help{
 }
 .listlabel1{
 	font:16px/22px 'Varela Round', sans-serif;
-	width:200px;
+	width:140px;
 	color: #5b5b5b;
 	margin:0;
 	display: inline-block;
@@ -54,14 +54,26 @@ p.boxlabel, p.help{
 }
 .listlabel2{
 	font:16px/22px 'Varela Round', sans-serif;
-	width:60px;
+	width:50px;
 	color: #5b5b5b;
 	margin:0;
 	display: inline-block;
-	margin-right:20px;
 	text-align: center;
 }
-
+.btn-label{
+	font-size: 0;
+	width:30px;
+	height:15px;
+	border: 1px solid #000;
+    border-radius: 8px;
+	background: #ccc;
+	display: inline-block;
+	margin-right:20px;
+	margin-left:5px;
+}
+.btn-label:hover{
+	background: #1c9d3f;
+}
 .new-source{
 	display: block;
 }
@@ -70,14 +82,19 @@ p.boxlabel, p.help{
 	position: relative;
 	top: 10px;
 	height: 18px;
-	width:200px;
+	width:248px;
 	border: 1px solid #000000;
 	padding: 5px;
 }
+.progresslabel{
+	font:14px/20px 'Varela Round', sans-serif;
+	color: #5b5b5b;
+}
 .btn{	
-	width:120px;
+	width:140px;
 	height:30px;
-	
+	display: block;	
+	margin-top:5px;
 }
 #dataSource {
 	height:30px;
@@ -88,26 +105,6 @@ p.boxlabel, p.help{
 	padding:5px;
 }
 
-.btn-delete{	
-	background: url("../img/btnDelete.jpg") no-repeat right;
-    -webkit-background-size: contain;
-    -moz-background-size: contain;
-    -o-background-size: contain;
-    background-size: contain;
-	font-size: 0;
-	width: 80px;
-	height: 14px;
-}
-.btn-edit{	
-	background: url("../img/btnEdit.jpg") no-repeat left;
-    -webkit-background-size: contain;
-    -moz-background-size: contain;
-    -o-background-size: contain;
-    background-size: contain;
-	font-size: 0;
-	width: 80px;
-	height: 18px;
-}
 .pointer {
 	cursor: pointer;
 }
@@ -128,9 +125,8 @@ p.boxlabel, p.help{
 	display: inline-block;
 }
 .fa-container2{	
-	display: inline-block;
-	float: right;
-	padding-top:28px;
+	display: block;
+	padding-top:10px;
 }
 .fa-help{
 	margin-top:10px;

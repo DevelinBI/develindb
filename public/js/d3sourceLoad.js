@@ -1,7 +1,7 @@
 function loadData(data){
 
 	// Set up the css
-	var listlabel1 = 'listlabel1', listlabel2 = 'listlabel2';
+	var listlabel1 = 'listlabel1', listlabel2 = 'listlabel2', btnlabel = 'btn-label';
 	
 	var data=JSON.parse(data);
 	var columns = ['company', 'name', 'source', 'count', 'edit', 'del'];
@@ -18,7 +18,8 @@ function loadData(data){
 	.append('th')
 	.text(function (column) 
 		{ 
-			if(column !== 'del' && column !== 'edit'){return column;}
+			return column;
+			//if(column !== 'del' && column !== 'edit'){return column;}
 		})
 	.attr('class', function (d) 
 		{
@@ -65,8 +66,8 @@ function loadData(data){
 			if(d.column == 'company' || d.column == 'source'){return listlabel1;}
 			else if(d.column == 'name'){return listlabel1;}
 			else if(d.column == 'count'){return listlabel2;}
-			else if(d.column == 'edit'){return 'btn-edit' + ' ' + 'pointer';}
-			else if(d.column == 'del'){return 'btn-delete' + ' ' + 'pointer';}
+			else if(d.column == 'edit'){return btnlabel + ' ' + 'pointer';}
+			else if(d.column == 'del'){return btnlabel + ' ' + 'pointer';}
 	
 		})
 	.on("click", function(d) 
