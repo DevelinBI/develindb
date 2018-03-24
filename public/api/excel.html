@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Header</title>   
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script> 
+	<link rel='stylesheet' type='text/css' href='../css/style.css'>
+</head>
+<body>
+<div class='container'>
+
+	<div class='banner-row'>
+		<h1>Excel Spreadsheet Interface Control</h1>
+	</div>
+
+	<h2 id='xl-header'>Company:</h2><h2 id='xl-company'></h2><h2 id='xl-header'>API Name:</h2><h2 id='xl-name'></h2>
+	<div class = 'source-wrapper' id='b1'>
+		<div class='xl-container1'>
+			<p class="boxlabel">Enter the path to the spreadsheet</p>
+			<textarea id='xl-wbPath' class='entry-box' rows='1' cols='20'></textarea>		
+		</div>	
+		<div class='xl-container1'>
+			<p class="boxlabel">Enter the spreadsheet name</p>
+			<textarea id='xl-wbName' class='entry-box' rows='1' cols='20'></textarea>
+		</div>
+		<div class='xl-container1'>
+			<p class="boxlabel">Enter the range containing the data</p>
+			<textarea id='xl-wbRange' class='entry-box' rows='1' cols='20'></textarea>
+		</div>
+		<div class='clear'></div>
+		<div class='xl-container2'>
+			<button class='btn' onclick='sourceUpdate()'>Update source</button>
+		</div>
+		<div class='xl-container2'>
+			<button class='btn' onclick='dataUpload()'>Upload data</button>
+			<p id="progresslabel"></p>
+		</div>
+		<div class='clear'></div>	
+	</div>
+		
+		
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+<script>
+
+
+$(document).ready(function(){
+	var name = window.name;
+	var n_source = name.search("source:");
+	var n_name = name.search(",name:");
+	var n_company = name.search(",company:");
+	var source = name.substring(n_source + 7, n_name);
+	var sourceName = name.substring(n_name + 6, n_company);
+	var company = name.substring(n_company + 9, name.length - 1);
+	$('#xl-company').html(company);
+	$('#xl-name').html(sourceName);
+	var strSend = JSON.stringify({company: company, source: source, sourceName: sourceName});	
+	console.log(strSend);
+	 $.ajax({
+		type: 'POST',
+		url: '../xl-pageLoad',
+		contentType: 'application/json',
+		data: strSend,
+		success: function(result)
+		{		
+			result=JSON.parse(result);
+			$('#xl-wbPath').val(result[0].path);
+			$('#xl-wbName').val(result[0].name);
+			$('#xl-wbRange').val(result[0].range);		
+		}
+	});	
+})
+
+function dataUpload(){
+  
+    var company = $('#xl-company').html();
+	var source = 'excel';
+	var sourceName = $('#xl-name').html();
+	var path = $('#xl-wbPath').val();
+	var name = $('#xl-wbName').val(); 
+	var range = $('#xl-wbRange').val();
+	if (path.length == 0 || name.length == 0  || range.length == 0)
+	{
+		window.alert("Please enter a path, a name for the spreadsheet, and the name of the range containing the data.");
+	}
+	else
+	{
+		var strSend = JSON.stringify({company: company, source: source, sourceName: sourceName, path: path, name: name, range: range});	
+		console.log(strSend);
+		$.ajax({
+			type: 'POST',
+			url: '../xl-dataUpload',
+			contentType: 'application/json',
+			data: strSend,
+			success: function(result){$('#progresslabel').html(result);}
+		});	
+	}
+}
+
+
+function sourceUpdate(){
+  
+    var company = $('#xl-company').html();
+	var source = 'excel';
+	var sourceName = $('#xl-name').html();
+	var path = $('#xl-wbPath').val();
+	var name = $('#xl-wbName').val(); 
+	var range = $('#xl-wbRange').val();
+	if (path.length == 0 || name.length == 0  || range.length == 0)
+	{
+		window.alert("Please enter a path, a name for the spreadsheet, and the name of the range containing the data.");
+	}
+	else
+	{
+		var strSend = JSON.stringify({company: company, source: source, sourceName: sourceName, path: path, name: name, range: range});	
+		console.log(strSend);
+		$.ajax({
+			type: 'POST',
+			url: '../xl-sourceUpdate',
+			contentType: 'application/json',
+			data: strSend,
+			success: function(result){$('#progresslabel').html(result);}
+		});	
+	}
+}
+
+
+
+
+
+	
+</script>

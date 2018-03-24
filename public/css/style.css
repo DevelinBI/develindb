@@ -109,6 +109,25 @@ p.boxlabel, p.help{
 	cursor: pointer;
 }
 
+/*-------- excel control----------*/
+#xl-header, #xl-company, #xl-name{
+	display: inline-block;
+}
+#xl-header{
+	margin-right:10px;
+}
+#xl-company{
+	margin-right:30px;
+}
+
+.xl-container1{	
+	display: inline-block;
+	margin-right:10px;
+}
+.xl-container2{	
+	display: block;
+	padding-top:10px;
+}
 
 /*-------- freeagent control----------*/
 #fa-header, #fa-company, #fa-name{
